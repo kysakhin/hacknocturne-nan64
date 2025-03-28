@@ -5,6 +5,8 @@ import { ArrowRight, Recycle, BarChart, MessageCircle, ShieldCheck, Zap } from "
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 
+
+
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
@@ -22,12 +24,17 @@ export default function Home() {
                 Buy, sell, or barter used electronics. Reduce e-waste and contribute to a sustainable future.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
+                <Link href = "/products">
                 <Button size="lg" className="bg-green-600 hover:bg-green-700">
                   Browse Products <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
+                </Link>
+
+                <Link href = "/sell">
                 <Button size="lg" variant="outline">
                   Sell Your Device
                 </Button>
+                </Link>
               </div>
               <div className="flex items-center text-sm text-gray-500">
                 <ShieldCheck className="mr-2 h-4 w-4 text-green-600" />
@@ -37,7 +44,7 @@ export default function Home() {
             <div className="relative">
               <div className="relative z-10 rounded-lg overflow-hidden shadow-xl">
                 <img
-                  src="/placeholder.jpg"
+                  src="/SwapEnv.jpg"
                   alt="Electronics marketplace"
                   className="w-full h-auto"
                 />
@@ -72,13 +79,13 @@ export default function Home() {
             />
             <FeatureCard
               icon={<MessageCircle className="h-10 w-10 text-green-600" />}
-              title="Chat Integration"
-              description="Communicate directly with buyers and sellers to negotiate deals"
+              title="AI Support Assist"
+              description="Use our AI assistant to get help with you questions."
             />
             <FeatureCard
               icon={<BarChart className="h-10 w-10 text-green-600" />}
-              title="Product Detection"
-              description="Our AI helps identify and categorize your electronics automatically"
+              title="User prioritized "
+              description="Be a seller or a buyer, you'll be respected always "
             />
             <FeatureCard
               icon={<Recycle className="h-10 w-10 text-green-600" />}
@@ -100,15 +107,15 @@ export default function Home() {
           <div className="text-center">
             <h2 className="text-3xl font-bold text-white">Ready to make a difference?</h2>
             <p className="mt-4 text-xl text-green-100 max-w-2xl mx-auto">
-              Join thousands of users who are reducing e-waste and saving money
+              Join us, help us reducing e-waste and saving money
             </p>
+            
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-              <Button size="lg" variant="secondary">
-                Sign Up Now
-              </Button>
-              <Button size="lg" variant="outline" className="text-white border-white hover:bg-green-700">
-                Learn More
-              </Button>
+              <Link href="/auth/signup">
+                <Button size="lg" variant="secondary">
+                  Sign Up Now
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -159,48 +166,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="container mx-auto max-w-7xl">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">What Our Users Say</h2>
-            <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
-              Join our community of environmentally conscious tech enthusiasts
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Sarah J.",
-                quote:
-                  "I've sold 5 devices and bought 3 more. The process is seamless and I love knowing I'm reducing e-waste.",
-              },
-              {
-                name: "Michael T.",
-                quote: "The barter system is genius! I traded my old laptop for a tablet without spending a dime.",
-              },
-              {
-                name: "Priya K.",
-                quote:
-                  "As a student, I can't afford new electronics. Swap Env has been a lifesaver for getting quality tech on a budget.",
-              },
-            ].map((testimonial, index) => (
-              <div key={index} className="bg-green-50 p-6 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <div className="h-12 w-12 rounded-full bg-green-200 flex items-center justify-center text-green-600 font-bold text-xl">
-                    {testimonial.name.charAt(0)}
-                  </div>
-                  <div className="ml-4">
-                    <h3 className="font-medium text-gray-900">{testimonial.name}</h3>
-                    <p className="text-sm text-gray-500">Verified User</p>
-                  </div>
-                </div>
-                <p className="text-gray-600 italic">"{testimonial.quote}"</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
       {/* Environmental Impact */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
@@ -246,7 +212,7 @@ export default function Home() {
             <div className="relative">
               <div className="relative z-10 rounded-lg overflow-hidden shadow-xl">
                 <img
-                  src="/placeholder.svg?height=600&width=800&text=Environmental+Impact"
+                  src="/placeholder.jpg"
                   alt="Environmental impact visualization"
                   className="w-full h-auto"
                 />
@@ -255,8 +221,9 @@ export default function Home() {
             </div>
           </div>
         </div>
+        
       </section>
-
+      
       <Footer />
     </div>
   )
