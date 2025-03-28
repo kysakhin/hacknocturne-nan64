@@ -205,39 +205,42 @@ export default function ProductsPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <Link href={`/products/${product.id}`} key={product.id}>
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="aspect-square relative">
-                      <Image
-                        height={300}
-                        width={300}
-                        src={product.product_details.images[0] || "/placeholder.svg"}
-                        alt={product.product_details.about_product.brand}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                    <CardContent className="p-4">
-                      <h3 className="font-medium text-lg mb-1 truncate">{product.product_details.about_product.brand || "Unknown Brand"}</h3>
-                      <p className="text-green-600 font-bold">${product.price}</p>
-                      <div className="flex justify-between items-center mt-2 text-sm text-gray-500">
-                        <span>{product.product_details.about_product.condition}</span>
-                        <span>{product.product_details.about_product.location || "Unknown Location"}</span>
-                      </div>
-                      <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
-                        <div className="text-sm">
-                          <span className="text-gray-500">Seller: </span>
-                          <span>{product.seller_id}</span>
+              {products.length === 0 ? (<LoaderComponent />) : (
+                  products.map((product) => (
+                    <Link href={`/products/${product.id}`} key={product.id}>
+                      <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                        <div className="aspect-square relative">
+                          <Image
+                            height={300}
+                            width={300}
+                            src={product.product_details.images[0] || "/placeholder.svg"}
+                            alt={product.product_details.about_product.brand}
+                            className="object-cover w-full h-full"
+                          />
                         </div>
-                        <div className="flex items-center">
-                          <span className="text-yellow-500 mr-1">★</span>
-                          <span className="text-sm">5</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+                        <CardContent className="p-4">
+                          <h3 className="font-medium text-lg mb-1 truncate">{product.product_details.about_product.brand || "Unknown Brand"}</h3>
+                          <p className="text-green-600 font-bold">₹ {product.sale_details?.listing_price}</p>
+                          <div className="flex justify-between items-center mt-2 text-sm text-gray-500">
+                            <span>{product.product_details.about_product.condition}</span>
+                            <span>{product.product_details.about_product.location || "Unknown Location"}</span>
+                          </div>
+                          <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+                            <div className="text-sm">
+                              <span className="text-gray-500">Seller: </span>
+                              <span>{product.seller_id}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <span className="text-yellow-500 mr-1">★</span>
+                              <span className="text-sm">5</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))
+              )}
+              
             </div>
 
             <div className="mt-8 flex justify-center">
@@ -265,3 +268,16 @@ export default function ProductsPage() {
     </div>
   )
 }
+
+const LoaderComponent = () => {
+  return (
+    <div className="w-full mx-auto">
+      <div className="flex justify-center items-center w-full h-64">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
+          <div className="absolute inset-0 border-4 border-primary border-t-transparent border-r-transparent rounded-full animate-spin"></div>
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -268,17 +268,17 @@ export default function SellPage() {
                       ? "border-green-600"
                       : "border-gray-200"
                   }`}
-                  onClick={() => setListingType("both")}
+                  onClick={() => setListingType("recycle")}
                 >
                   <CardContent className="p-6 flex flex-col items-center text-center">
                     <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
                       <Leaf className="h-6 w-6 text-green-600" />
                     </div>
-                    <h3 className="font-medium">Both</h3>
+                    <h3 className="font-medium">recycle</h3>
                     <p className="text-sm text-gray-500 mt-2">
                       Sell or barter your item
                     </p>
-                    {listingType === "both" && (
+                    {listingType === "recycle" && (
                       <CheckCircle className="h-5 w-5 text-green-600 mt-2" />
                     )}
                   </CardContent>
@@ -324,19 +324,17 @@ export default function SellPage() {
                             defaultValue={formData.category}
                           >
                             <SelectTrigger id="category">
-                              <SelectValue placeholder="Select category" />
+                              <SelectValue placeholder="Select Category" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="smartphone">
-                                Smartphone
-                              </SelectItem>
-                              <SelectItem value="laptop">Laptop</SelectItem>
-                              <SelectItem value="tablet">Tablet</SelectItem>
-                              <SelectItem value="camera">Camera</SelectItem>
-                              <SelectItem value="audio">Audio</SelectItem>
-                              <SelectItem value="gaming">Gaming</SelectItem>
-                              <SelectItem value="wearable">Wearable</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
+                              <SelectItem value="Smartphone">Smartphone</SelectItem>
+                              <SelectItem value="Laptop">Laptop</SelectItem>
+                              <SelectItem value="Tablet">Tablet</SelectItem>
+                              <SelectItem value="Camera">Camera</SelectItem>
+                              <SelectItem value="Audio">Audio</SelectItem>
+                              <SelectItem value="Gaming">Gaming</SelectItem>
+                              <SelectItem value="Wearable">Wearable</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -347,19 +345,17 @@ export default function SellPage() {
                             onValueChange={(value) => setFormData((prev) => ({ ...prev, brand: value }))}
                             defaultValue={formData.brand}>
                             <SelectTrigger id="brand">
-                              <SelectValue placeholder="Select brand" />
+                              <SelectValue placeholder="Select Brand" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="apple">Apple</SelectItem>
-                              <SelectItem value="samsung">Samsung</SelectItem>
-                              <SelectItem value="google">Google</SelectItem>
-                              <SelectItem value="sony">Sony</SelectItem>
-                              <SelectItem value="microsoft">
-                                Microsoft
-                              </SelectItem>
-                              <SelectItem value="dell">Dell</SelectItem>
-                              <SelectItem value="lg">LG</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
+                              <SelectItem value="Apple">Apple</SelectItem>
+                              <SelectItem value="Samsung">Samsung</SelectItem>
+                              <SelectItem value="Google">Google</SelectItem>
+                              <SelectItem value="Sony">Sony</SelectItem>
+                              <SelectItem value="Microsoft">Microsoft</SelectItem>
+                              <SelectItem value="Dell">Dell</SelectItem>
+                              <SelectItem value="Lg">LG</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -598,7 +594,7 @@ export default function SellPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      {(listingType === "sale" || listingType === "both") && (
+                      {(listingType === "sale") && (
                         <div className="space-y-4">
                           <h3 className="font-medium">Sale Options</h3>
 

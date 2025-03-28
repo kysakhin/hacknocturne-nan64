@@ -1,13 +1,9 @@
 "use client"
 import { Checkbox } from "@/components/ui/checkbox"
-
 import { Separator } from "@/components/ui/separator"
-
 import { Label } from "@/components/ui/label"
-
 import { Input } from "@/components/ui/input"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -48,9 +44,48 @@ import {
 } from "lucide-react"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
+import { app, db } from "@/lib/firebase"
+import { getAuth, onAuthStateChanged } from "firebase/auth"
+import { doc, getDoc } from "firebase/firestore"
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("overview")
+  const [userId, setUserId] = useState(null);
+  const [listings, setListings] = useState([]);
+
+  // States for user?
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const auth = getAuth(app);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {setUserId(user.uid); console.log(user.uid);}
+      else setUserId(null);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const setUserProductDetails = async () => {
+      try {
+        const userRef = doc(db, "users", userId);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          setListings(docSnap.data().listed_products);
+          setFullName(docSnap.data().fullName);
+          setEmail(docSnap.data().email);
+        }
+      } catch (error) {
+        console.error("Error fetching user listings:", error);
+      }
+    };
+
+    setUserProductDetails();
+  }, [userId]);
 
   // Mock user data
   const user = {
@@ -70,47 +105,6 @@ export default function DashboardPage() {
       carbonSaved: 320
     }
   }
-
-  // Mock listings data
-  const listings = [
-    {
-      id: "1",
-      name: "MacBook Pro 2021",
-      price: 1299,
-      status: "active",
-      condition: "Excellent",
-      views: 87,
-      likes: 12,
-      messages: 5,
-      image: "/placeholder.svg?height=200&width=200&text=MacBook+Pro",
-      listedDate: "2 weeks ago"
-    },
-    {
-      id: "2",
-      name: "iPhone 13 Pro",
-      price: 699,
-      status: "active",
-      condition: "Like New",
-      views: 142,
-      likes: 24,
-      messages: 8,
-      image: "/placeholder.svg?height=200&width=200&text=iPhone+13+Pro",
-      listedDate: "3 days ago"
-    },
-    {
-      id: "3",
-      name: "Sony WH-1000XM4",
-      price: 220,
-      status: "sold",
-      condition: "Good",
-      views: 56,
-      likes: 7,
-      messages: 3,
-      image: "/placeholder.svg?height=200&width=200&text=Sony+Headphones",
-      listedDate: "1 month ago",
-      soldDate: "2 weeks ago"
-    }
-  ]
 
   // Mock orders data
   const orders = [
@@ -158,61 +152,9 @@ export default function DashboardPage() {
     }
   ]
 
-  // Mock messages data
-  const messages = [
-    {
-      id: "1",
-      from: "Alex Thompson",
-      avatar: "/placeholder.svg?height=50&width=50&text=AT",
-      product: "MacBook Pro 2021",
-      preview: "Is this still available? I'm interested in buying it.",
-      time: "2 hours ago",
-      unread: true
-    },
-    {
-      id: "2",
-      from: "Maria Garcia",
-      avatar: "/placeholder.svg?height=50&width=50&text=MG",
-      product: "iPhone 13 Pro",
-      preview: "Would you consider $650 for the iPhone?",
-      time: "Yesterday",
-      unread: false
-    },
-    {
-      id: "3",
-      from: "John Smith",
-      avatar: "/placeholder.svg?height=50&width=50&text=JS",
-      product: "Sony WH-1000XM4",
-      preview: "Thanks for the quick delivery! The headphones work great.",
-      time: "3 days ago",
-      unread: false
-    }
-  ]
-
-  // Mock saved items data
-  const savedItems = [
-    {
-      id: "1",
-      name: "Samsung Galaxy S21",
-      price: 450,
-      seller: "Michael Brown",
-      condition: "Good",
-      image: "/placeholder.svg?height=100&width=100&text=Galaxy+S21"
-    },
-    {
-      id: "2",
-      name: "Apple Watch Series 7",
-      price: 320,
-      seller: "Emily Davis",
-      condition: "Like New",
-      image: "/placeholder.svg?height=100&width=100&text=Apple+Watch"
-    }
-  ]
-
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
@@ -224,25 +166,14 @@ export default function DashboardPage() {
                     <Avatar className="h-24 w-24 mb-4">
                       <AvatarImage src={user.avatar} alt={user.name} />
                       <AvatarFallback>
-                        {user.name
+                        {fullName
                           .split(" ")
                           .map(n => n[0])
                           .join("")}
                       </AvatarFallback>
                     </Avatar>
-                    <h2 className="text-xl font-bold">{user.name}</h2>
-                    <p className="text-gray-500">{user.email}</p>
-                    <div className="flex items-center mt-2">
-                      <span className="text-yellow-500 mr-1">★</span>
-                      <span>{user.rating}</span>
-                      <span className="text-gray-500 ml-1">
-                        ({user.reviews} reviews)
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      Member since {user.memberSince}
-                    </div>
-                    <div className="text-sm text-gray-500">{user.location}</div>
+                    <h2 className="text-xl font-bold">{fullName}</h2>
+                    <p className="text-gray-500">{email}</p>
                     <Button className="mt-4 w-full bg-green-600 hover:bg-green-700">
                       Edit Profile
                     </Button>
@@ -354,7 +285,8 @@ export default function DashboardPage() {
                             Active Listings
                           </p>
                           <p className="text-2xl font-bold">
-                            {listings.filter(l => l.status === "active").length}
+                            {/* {listings.filter(l => l.sale_details?.status === "Available").length} */}
+                            {listings.length}
                           </p>
                         </div>
                         <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
@@ -418,92 +350,13 @@ export default function DashboardPage() {
                   <TabsList>
                     <TabsTrigger value="active">Active</TabsTrigger>
                     <TabsTrigger value="sold">Sold</TabsTrigger>
-                    <TabsTrigger value="draft">Drafts</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="active" className="mt-4">
                     <div className="space-y-4">
                       {listings
-                        .filter(l => l.status === "active")
-                        .map(listing => (
-                          <Card key={listing.id}>
-                            <CardContent className="p-4">
-                              <div className="flex flex-col sm:flex-row items-start gap-4">
-                                <div className="h-24 w-24 rounded-md overflow-hidden flex-shrink-0">
-                                  <img
-                                    src={listing.image || "/placeholder.svg"}
-                                    alt={listing.name}
-                                    className="object-cover w-full h-full"
-                                  />
-                                </div>
-                                <div className="flex-1">
-                                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                    <h3 className="font-medium text-lg">
-                                      {listing.name}
-                                    </h3>
-                                    <Badge
-                                      variant="outline"
-                                      className="text-green-600 border-green-600"
-                                    >
-                                      {listing.condition}
-                                    </Badge>
-                                  </div>
-                                  <p className="text-green-600 font-bold">
-                                    ${listing.price}
-                                  </p>
-                                  <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-500">
-                                    <div className="flex items-center">
-                                      <Clock className="h-4 w-4 mr-1" />
-                                      Listed {listing.listedDate}
-                                    </div>
-                                    <div className="flex items-center">
-                                      <Eye className="h-4 w-4 mr-1" />
-                                      {listing.views} views
-                                    </div>
-                                    <div className="flex items-center">
-                                      <Heart className="h-4 w-4 mr-1" />
-                                      {listing.likes} likes
-                                    </div>
-                                    <div className="flex items-center">
-                                      <MessageCircle className="h-4 w-4 mr-1" />
-                                      {listing.messages} messages
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="flex sm:flex-col gap-2 mt-2 sm:mt-0">
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <Button variant="ghost" size="icon">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                      </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                      <DropdownMenuLabel>
-                                        Actions
-                                      </DropdownMenuLabel>
-                                      <DropdownMenuSeparator />
-                                      <DropdownMenuItem>
-                                        <Edit className="h-4 w-4 mr-2" />
-                                        Edit Listing
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem>
-                                        <Package className="h-4 w-4 mr-2" />
-                                        Mark as Sold
-                                      </DropdownMenuItem>
-                                      <DropdownMenuItem className="text-red-600">
-                                        <Trash className="h-4 w-4 mr-2" />
-                                        Delete Listing
-                                      </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
-                                  <Button variant="outline" size="sm">
-                                    <Edit className="h-4 w-4 mr-2" />
-                                    Edit
-                                  </Button>
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
+                        .map((listing) => (
+                          <FetchListingDetails key={listing} id={listing} />
                         ))}
                     </div>
                   </TabsContent>
@@ -858,169 +711,6 @@ export default function DashboardPage() {
                     </div>
                   </TabsContent>
                 </Tabs>
-              </div>
-            )}
-
-            {activeTab === "messages" && (
-              <div className="space-y-6">
-                <h1 className="text-2xl font-bold">Messages</h1>
-
-                <div className="bg-white rounded-lg shadow overflow-hidden">
-                  <div className="grid grid-cols-1 md:grid-cols-3">
-                    {/* Message List */}
-                    <div className="border-r border-gray-200">
-                      <div className="p-4 border-b border-gray-200">
-                        <Input placeholder="Search messages..." />
-                      </div>
-                      <div className="divide-y divide-gray-200 max-h-[500px] overflow-y-auto">
-                        {messages.map((message, index) => (
-                          <div
-                            key={message.id}
-                            className={`p-4 hover:bg-gray-50 cursor-pointer ${
-                              index === 0 ? "bg-gray-50" : ""
-                            }`}
-                          >
-                            <div className="flex items-start space-x-3">
-                              <Avatar>
-                                <AvatarImage
-                                  src={message.avatar}
-                                  alt={message.from}
-                                />
-                                <AvatarFallback>
-                                  {message.from
-                                    .split(" ")
-                                    .map(n => n[0])
-                                    .join("")}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between">
-                                  <p className="font-medium truncate">
-                                    {message.from}
-                                  </p>
-                                  <span className="text-xs text-gray-500 whitespace-nowrap">
-                                    {message.time}
-                                  </span>
-                                </div>
-                                <p className="text-sm text-gray-600 truncate">
-                                  {message.preview}
-                                </p>
-                                <p className="text-xs text-gray-500 truncate">
-                                  Re: {message.product}
-                                </p>
-                              </div>
-                              {message.unread && (
-                                <div className="h-2 w-2 bg-green-600 rounded-full"></div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Message Content */}
-                    <div className="md:col-span-2 flex flex-col h-[500px]">
-                      <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <Avatar>
-                            <AvatarImage
-                              src={messages[0].avatar}
-                              alt={messages[0].from}
-                            />
-                            <AvatarFallback>
-                              {messages[0].from
-                                .split(" ")
-                                .map(n => n[0])
-                                .join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium">{messages[0].from}</p>
-                            <p className="text-xs text-gray-500">
-                              Re: {messages[0].product}
-                            </p>
-                          </div>
-                        </div>
-                        <Button variant="ghost" size="sm">
-                          View Profile
-                        </Button>
-                      </div>
-
-                      <div className="flex-1 p-4 overflow-y-auto">
-                        <div className="space-y-4">
-                          <div className="flex justify-start">
-                            <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
-                              <p className="text-sm">
-                                Hi there! I'm interested in your MacBook Pro. Is
-                                it still available?
-                              </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                2 hours ago
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex justify-end">
-                            <div className="bg-green-100 rounded-lg p-3 max-w-[80%]">
-                              <p className="text-sm">
-                                Yes, it's still available! Are you interested in
-                                buying or bartering?
-                              </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                2 hours ago
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex justify-start">
-                            <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
-                              <p className="text-sm">
-                                I'd like to buy it. Is the price negotiable? I'm
-                                thinking around $1200.
-                              </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                2 hours ago
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex justify-end">
-                            <div className="bg-green-100 rounded-lg p-3 max-w-[80%]">
-                              <p className="text-sm">
-                                I can do $1250, and I'll include a laptop
-                                sleeve. How does that sound?
-                              </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                1 hour ago
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex justify-start">
-                            <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
-                              <p className="text-sm">
-                                That sounds great! When and where can we meet
-                                for the exchange?
-                              </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                1 hour ago
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="p-4 border-t border-gray-200">
-                        <div className="flex space-x-2">
-                          <Input placeholder="Type your message..." />
-                          <Button className="bg-green-600 hover:bg-green-700">
-                            Send
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             )}
 
@@ -1379,4 +1069,80 @@ function RadioGroupItem({ value, id }) {
   )
 }
 
-  
+const LoadingComponent = () => {
+  return (
+    <div className="w-full mx-auto">
+      <div className="flex justify-center items-center w-full h-64">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
+          <div className="absolute inset-0 border-4 border-primary border-t-transparent border-r-transparent rounded-full animate-spin"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const FetchListingDetails = ({ id }) => {
+  const [items, setItems] = useState(null);
+
+  useEffect(() => {
+    const fetchListing = async () => {
+      if (!id) return;
+      try {
+        console.log("Fetching listing for ID:", id);
+        const docRef = doc(db, "products", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setItems(docSnap.data());
+        } else {
+          console.log("Document doesn't exist");
+        }
+      } catch (error) {
+        console.error("Error fetching listing: ", error);
+      }
+    };
+
+    fetchListing();
+  }, [id]); // ✅ Include `id` as a dependency so it refetches when `id` changes
+
+  // ✅ Prevent rendering until `items` is loaded
+  if (!items) return <LoadingComponent />; // Or return `null`
+
+  return (
+    <Card key={id}> {/* ✅ Use `id` as key, since `seller_id` is inside `items` */}
+      <CardContent className="p-4">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
+          <div className="h-24 w-24 rounded-md overflow-hidden flex-shrink-0">
+            <img
+              src={items.product_details?.images?.[0] || "/placeholder.svg"}
+              alt={items.product_details?.about_product?.title || "Product"}
+              className="object-cover w-full h-full"
+            />
+          </div>
+          <div className="flex-1">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <h3 className="font-medium text-lg">
+                {items.product_details?.about_product?.title || "Unknown Product"}
+              </h3>
+              <Badge
+                variant="outline"
+                className="text-green-600 border-green-600"
+              >
+                {items.product_details?.about_product?.condition || "Unknown"}
+              </Badge>
+            </div>
+            <p className="text-green-600 font-bold">
+              Rs. {items.sale_details?.listing_price || "N/A"}
+            </p>
+            <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-500">
+              <div className="flex items-center">
+                <Clock className="h-4 w-4 mr-1" />
+                Listed {items.createdAt || "Unknown date"}
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
