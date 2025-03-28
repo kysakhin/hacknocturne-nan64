@@ -299,32 +299,7 @@ export default function DashboardPage() {
                     <RefreshCw className="h-5 w-5" />
                     <span>Barters</span>
                   </button>
-
-                  <button
-                    className={`flex items-center space-x-3 px-4 py-3 text-left ${
-                      activeTab === "messages"
-                        ? "bg-green-50 text-green-600 border-l-4 border-green-600"
-                        : "hover:bg-gray-50"
-                    }`}
-                    onClick={() => setActiveTab("messages")}
-                  >
-                    <MessageCircle className="h-5 w-5" />
-                    <span>Messages</span>
-                    <Badge className="ml-auto bg-green-600">3</Badge>
-                  </button>
-
-                  <button
-                    className={`flex items-center space-x-3 px-4 py-3 text-left ${
-                      activeTab === "saved"
-                        ? "bg-green-50 text-green-600 border-l-4 border-green-600"
-                        : "hover:bg-gray-50"
-                    }`}
-                    onClick={() => setActiveTab("saved")}
-                  >
-                    <Heart className="h-5 w-5" />
-                    <span>Saved Items</span>
-                  </button>
-
+                  
                   <button
                     className={`flex items-center space-x-3 px-4 py-3 text-left ${
                       activeTab === "settings"
@@ -352,38 +327,20 @@ export default function DashboardPage() {
               <div className="space-y-6">
                 <h1 className="text-2xl font-bold">Dashboard Overview</h1>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2  gap-4">
                   <Card>
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm font-medium text-gray-500">
-                            Total Earnings
+                            Total Earnings (Rs.)
                           </p>
                           <p className="text-2xl font-bold">
-                            ${user.stats.totalEarnings}
+                            {user.stats.totalEarnings}
                           </p>
                         </div>
                         <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
                           <DollarSign className="h-6 w-6 text-green-600" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">
-                            Carbon Saved
-                          </p>
-                          <p className="text-2xl font-bold">
-                            {user.stats.carbonSaved} kg
-                          </p>
-                        </div>
-                        <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
-                          <Leaf className="h-6 w-6 text-green-600" />
                         </div>
                       </div>
                     </CardContent>
@@ -442,168 +399,6 @@ export default function DashboardPage() {
                         <p className="text-sm text-gray-500">Items Recycled</p>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Recent Messages</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        {messages.slice(0, 2).map(message => (
-                          <div
-                            key={message.id}
-                            className="flex items-start space-x-3"
-                          >
-                            <Avatar>
-                              <AvatarImage
-                                src={message.avatar}
-                                alt={message.from}
-                              />
-                              <AvatarFallback>
-                                {message.from
-                                  .split(" ")
-                                  .map(n => n[0])
-                                  .join("")}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between">
-                                <p className="font-medium">{message.from}</p>
-                                <span className="text-xs text-gray-500">
-                                  {message.time}
-                                </span>
-                              </div>
-                              <p className="text-sm text-gray-600 truncate">
-                                {message.preview}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                Re: {message.product}
-                              </p>
-                            </div>
-                            {message.unread && (
-                              <div className="h-2 w-2 bg-green-600 rounded-full"></div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      <Button
-                        variant="outline"
-                        className="w-full mt-4"
-                        onClick={() => setActiveTab("messages")}
-                      >
-                        View All Messages
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Recent Listings</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        {listings.slice(0, 2).map(listing => (
-                          <div
-                            key={listing.id}
-                            className="flex items-center space-x-3"
-                          >
-                            <div className="h-12 w-12 rounded-md overflow-hidden">
-                              <img
-                                src={listing.image || "/placeholder.svg"}
-                                alt={listing.name}
-                                className="object-cover w-full h-full"
-                              />
-                            </div>
-                            <div className="flex-1">
-                              <p className="font-medium truncate">
-                                {listing.name}
-                              </p>
-                              <div className="flex items-center justify-between">
-                                <p className="text-green-600 font-medium">
-                                  ${listing.price}
-                                </p>
-                                <Badge
-                                  variant={
-                                    listing.status === "active"
-                                      ? "outline"
-                                      : "secondary"
-                                  }
-                                  className={
-                                    listing.status === "active"
-                                      ? "text-green-600 border-green-600"
-                                      : ""
-                                  }
-                                >
-                                  {listing.status === "active"
-                                    ? "Active"
-                                    : "Sold"}
-                                </Badge>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <Button
-                        variant="outline"
-                        className="w-full mt-4"
-                        onClick={() => setActiveTab("listings")}
-                      >
-                        View All Listings
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Environmental Impact</CardTitle>
-                    <CardDescription>
-                      Your contribution to sustainability
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-4">
-                      <div className="text-center">
-                        <div className="h-24 w-24 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                          <Leaf className="h-12 w-12 text-green-600" />
-                        </div>
-                        <p className="text-2xl font-bold">
-                          {user.stats.carbonSaved} kg
-                        </p>
-                        <p className="text-gray-500">CO2 Emissions Saved</p>
-                      </div>
-
-                      <div className="text-center">
-                        <div className="h-24 w-24 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                          <RefreshCw className="h-12 w-12 text-green-600" />
-                        </div>
-                        <p className="text-2xl font-bold">
-                          {user.stats.itemsSold +
-                            user.stats.itemsBought +
-                            user.stats.itemsBartered}
-                        </p>
-                        <p className="text-gray-500">Items Reused</p>
-                      </div>
-
-                      <div className="text-center">
-                        <div className="h-24 w-24 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                          <Package className="h-12 w-12 text-green-600" />
-                        </div>
-                        <p className="text-2xl font-bold">
-                          {user.stats.itemsRecycled}
-                        </p>
-                        <p className="text-gray-500">Items Recycled</p>
-                      </div>
-                    </div>
-
-                    <p className="text-center text-gray-600 mt-4">
-                      By reusing and recycling electronics, you've helped reduce
-                      e-waste and conserve natural resources. Keep up the great
-                      work!
-                    </p>
                   </CardContent>
                 </Card>
               </div>
@@ -1225,51 +1020,6 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "saved" && (
-              <div className="space-y-6">
-                <h1 className="text-2xl font-bold">Saved Items</h1>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {savedItems.map(item => (
-                    <Card
-                      key={item.id}
-                      className="overflow-hidden hover:shadow-lg transition-shadow"
-                    >
-                      <div className="aspect-square relative">
-                        <img
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.name}
-                          className="object-cover w-full h-full"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full"
-                        >
-                          <Heart className="h-5 w-5 text-red-500 fill-red-500" />
-                        </Button>
-                      </div>
-                      <CardContent className="p-4">
-                        <h3 className="font-medium text-lg mb-1 truncate">
-                          {item.name}
-                        </h3>
-                        <p className="text-green-600 font-bold">
-                          ${item.price}
-                        </p>
-                        <div className="flex justify-between items-center mt-2 text-sm text-gray-500">
-                          <span>{item.condition}</span>
-                          <span>Seller: {item.seller}</span>
-                        </div>
-                        <Button variant="outline" className="w-full mt-4">
-                          View Details
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
                 </div>
               </div>
             )}

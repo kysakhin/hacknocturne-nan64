@@ -31,7 +31,7 @@ export default function Home() {
               </div>
               <div className="flex items-center text-sm text-gray-500">
                 <ShieldCheck className="mr-2 h-4 w-4 text-green-600" />
-                <span>Trusted by 10,000+ environmentally conscious users</span>
+                <span>created with love, for the environment</span>
               </div>
             </div>
             <div className="relative">
