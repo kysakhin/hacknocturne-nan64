@@ -1,16 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Search, Menu, X, ShoppingCart, User, MessageCircle, Leaf } from "lucide-react"
 import { usePathname } from "next/navigation"
+import { getAuth, onAuthStateChanged } from "firebase/auth"
+import { app } from "@/lib/firebase"
 
 export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [user, setUser] = useState(null);
   const pathname = usePathname()
+
+  useEffect(() => {
+    const auth = getAuth(app);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    return ()  => unsubscribe();
+  })
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -63,12 +75,10 @@ export default function Navbar() {
             </Button>
           )}
 
-          <Link href = "https://env-rag.vercel.app/" target="_blank">
           <Button variant="ghost" size="icon" className="hidden md:flex">
             <MessageCircle className="h-5 w-5" />
             <span className="sr-only">Messages</span>
           </Button>
-          </Link>
 
           <Button variant="ghost" size="icon" className="hidden md:flex">
             <ShoppingCart className="h-5 w-5" />
@@ -82,18 +92,27 @@ export default function Navbar() {
             </Button>
           </Link>
 
-          <div className="hidden md:block">
-            <Link href="/auth/login">
-              <Button variant="outline" size="sm" className="mr-2">
-                Log in
+          {user ? (
+            <div className="hidden md:flex gap-4 align-middle items-center justify-center">
+              <p className="text-sm text-gray-600">Welcome, {user.displayName || "User"}!</p>
+              <Button variant="outline" size="sm" onClick={() => auth.signOut()}>
+                Logout
               </Button>
-            </Link>
-            <Link href="/auth/signup">
-              <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                Sign up
-              </Button>
-            </Link>
-          </div>
+            </div>
+          ) : (
+            <div className="hidden md:flex gap-4">
+              <Link href="/auth/login">
+                <Button variant="outline" size="sm" className="mr-2">
+                  Log in
+                </Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                  Sign up
+                </Button>
+              </Link>
+            </div>
+          )}
 
           <Sheet>
             <SheetTrigger asChild>

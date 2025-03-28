@@ -1,7 +1,9 @@
 "use client"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Phone, Mail } from "lucide-react";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { app } from '@/lib/firebase';
 
 export default function Details() {
   const router = useRouter();
@@ -10,7 +12,17 @@ export default function Details() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const auth = getAuth(app);
+    return onAuthStateChanged(auth, (user) => {
+      if (user) setUserId(user.uid);
+      else setUserId(null);
+    })
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -19,7 +31,16 @@ export default function Details() {
       return;
     }
 
-    // Add any additional validation here
+    const response = await fetch("/api/user-details", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ userId, fullName, phone, email })
+    });
+
+    if (!response.ok) throw new Error("Failed to create new user");
+
     router.push('/dashboard');
   };
 
