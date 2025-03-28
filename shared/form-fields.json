@@ -1,0 +1,111 @@
+{
+  "productDetails": [
+    {
+      "label": "Brand",
+      "name": "brand",
+      "fieldType": "text",
+      "required": true
+    },
+    {
+      "label": "Category",
+      "name": "category",
+      "fieldType": "text",
+      "required": true
+    },
+    {
+      "label": "Color",
+      "name": "color",
+      "fieldType": "text",
+      "required": false
+    },
+    {
+      "label": "Condition",
+      "name": "select",
+      "options": ["Like New", "Excellent", "Good", "Fair", "Poor"],
+      "fieldType": "text",
+      "required": true
+    },
+    {
+      "label": "Description",
+      "name": "description",
+      "fieldType": "textarea",
+      "required": false
+    },
+    {
+      "label": "Location",
+      "name": "location",
+      "fieldType": "text",
+      "required": true
+    },
+    {
+      "label": "Screen Size",
+      "name": "screen_size",
+      "fieldType": "text",
+      "required": false
+    },
+    {
+      "label": "Storage",
+      "name": "storage",
+      "fieldType": "number",
+      "required": true
+    },
+    {
+      "label": "Year",
+      "name": "year",
+      "fieldType": "number",
+      "required": true
+    }
+  ],
+  "saleDetails": [
+    {
+      "label": "Listing Price",
+      "name": "listing_price",
+      "fieldType": "number",
+      "required": true
+    },
+    {
+      "label": "Original Price",
+      "name": "original_price",
+      "fieldType": "number",
+      "required": true
+    },
+    {
+      "label": "Sale Type",
+      "name": "sale_type",
+      "fieldType": "select",
+      "options": ["direct", "auction", "barter"],
+      "required": true
+    },
+    {
+      "label": "Barter For",
+      "name": "barter_for",
+      "fieldType": "text",
+      "required": false
+    },
+    {
+      "label": "Status",
+      "name": "status",
+      "fieldType": "select",
+      "options": ["available", "sold", "reserved"],
+      "required": true
+    }
+  ],
+  "images": [
+    {
+      "label": "Images",
+      "name": "images",
+      "fieldType": "file",
+      "required": true,
+      "multiple": true
+    }
+  ],
+  "includedInBox": [
+    {
+      "label": "Included in Box",
+      "name": "included_in_box",
+      "fieldType": "text",
+      "required": false,
+      "multiple": true
+    }
+  ]
+}
