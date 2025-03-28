@@ -6,13 +6,15 @@ export async function POST(req) {
   try {
     const body = await req.json();
 
-    const { buyerId, product_details, seller_id } = body;
+    const { buyerId, product_details, sale_details, seller_id } = body;
 
     const listingsRef = collection(db, "products");
 
     const docRef = await addDoc(listingsRef, {
       buyerId,
       product_details,
+      sale_details,
+      sale_details,
       seller_id,
       createdAt: new Date().toISOString()
     });

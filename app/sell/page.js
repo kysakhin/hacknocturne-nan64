@@ -156,6 +156,7 @@ export default function SellPage() {
         buyerId: formData.buyerId || "",
         product_details: {
           about_product: {
+            title: formData.title || "",
             brand: formData.brand || "",
             category: formData.category || "",
             color: formData.color || "",
@@ -173,7 +174,7 @@ export default function SellPage() {
           barter_for: saleDetails.barter_for || "",
           listing_price: saleDetails.listing_price || 0,
           original_price: saleDetails.original_price || 0,
-          sale_type: saleDetails.sale_type || "",
+          sale_type: saleDetails.sale_type || "Sell",
           status: saleDetails.status || "Available",
         },
         seller_id: userId || "",
@@ -320,7 +321,8 @@ export default function SellPage() {
                           <Label htmlFor="category">Category</Label>
                           <Select 
                             onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value }))}
-                            defaultValue={formData.category}>
+                            defaultValue={formData.category}
+                          >
                             <SelectTrigger id="category">
                               <SelectValue placeholder="Select category" />
                             </SelectTrigger>
@@ -602,7 +604,7 @@ export default function SellPage() {
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                              <Label htmlFor="price">Price ($)</Label>
+                              <Label htmlFor="price">Price (₹)</Label>
                               <div className="relative">
                                 <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
                                 <Input
@@ -619,7 +621,7 @@ export default function SellPage() {
 
                             <div className="space-y-2">
                               <Label htmlFor="originalPrice">
-                                Original Price ($)
+                                Original Price (₹)
                               </Label>
                               <div className="relative">
                                 <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
