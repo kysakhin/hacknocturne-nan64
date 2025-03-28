@@ -18,7 +18,7 @@ export default function Navbar() {
     { name: "Sell", href: "/sell" },
     { name: "Barter", href: "/barter" },
     { name: "Recycle", href: "/recycle" },
-    { name: "About", href: "/about" },
+   
   ]
 
   return (

@@ -16,7 +16,7 @@ export default function SignupPage() {
   const handleGoogleSignup = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      router.push('/dashboard');
+      router.push('/details');
     } catch (error) {
       setError(`Google signup failed: ${error.message}`);
     }
