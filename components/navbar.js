@@ -14,9 +14,9 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [user, setUser] = useState(null);
   const pathname = usePathname()
+    const auth = getAuth(app);
 
   useEffect(() => {
-    const auth = getAuth(app);
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
     });
