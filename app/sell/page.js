@@ -365,7 +365,7 @@ export default function SellPage() {
                         <Label htmlFor="condition">Condition</Label>
                         <Select 
                           onValueChange={(value) => setFormData((prev) => ({ ...prev, condition: value }))}
-                          defaultValue="likeNew">
+                          defaultValue={formData.condition}>
                           <SelectTrigger id="condition">
                             <SelectValue placeholder="Select condition" />
                           </SelectTrigger>
@@ -702,7 +702,9 @@ export default function SellPage() {
                           <Label htmlFor="location">Your Location</Label>
                           <Input
                             id="location"
-                            placeholder="e.g., San Francisco, CA"
+                            value={formData.location || ""}
+                            onChange={handleFormChange}
+                            placeholder="e.g., Bengaluru, Karnataka"
                             required
                           />
                         </div>

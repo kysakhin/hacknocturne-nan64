@@ -13,12 +13,11 @@ import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import Link from "next/link"
 import Image from "next/image";
-import { getAuth } from "firebase/auth";
 
 export default function ProductsPage() {
 
-
   const [products, setProducts] = useState([]);
+  const [users, setUsers] = useState({});
 
   useEffect(() => {
     async function fetchListing() {
@@ -30,15 +29,36 @@ export default function ProductsPage() {
       }
 
       setProducts(data.data);
+
+      // Fetch users
+      const resUsers = await fetch('/api/fetch-users');
+      const dataUsers = await resUsers.json();
+
+      if (!resUsers.ok) {
+        throw new Error(dataUsers.message || "Something went wrong fetching users");
+      }
+
+      console.log(dataUsers);
+      const userMap = {};
+      dataUsers.data.forEach(user => {
+        userMap[user.id] = user;
+      });
+
+      setUsers(userMap);
     }
 
     fetchListing();
   }, [])
 
+  // Function to get user's full name by ID
+  const getSellerName = (sellerId) => {
+    return users[sellerId]?.fullName || sellerId;
+  };
+
 
   // Filter states
   const [filters, setFilters] = useState({
-    priceRange: [0, 3000],
+    priceRange: [0, 50000],
     conditions: new Set(),
     categories: new Set(),
     brands: new Set(),
@@ -58,9 +78,9 @@ export default function ProductsPage() {
 
   const filteredProducts = products.filter((product) => {
     return (
-      product.product_details.sale_details?.listing_price >= filters.priceRange[0] &&
-      product.product_details.sale_details?.listing_price <= filters.priceRange[1] &&
-      product.product_details.sale_details?.status === "Available" &&
+      product.sale_details.listing_price >= filters.priceRange[0] &&
+      product.sale_details.listing_price <= filters.priceRange[1] &&
+      product.sale_details.status === "Available" &&
       (filters.conditions.size === 0 || filters.conditions.has(product.condition)) &&
       (filters.searchQuery === "" || product.name.toLowerCase().includes(filters.searchQuery.toLowerCase()))
     );
@@ -81,7 +101,7 @@ export default function ProductsPage() {
                 size="sm" 
                 className="text-green-600"
                 onClick={() => setFilters({
-                  priceRange: [0, 3000],
+                  priceRange: [0, 50000],
                   conditions: new Set(),
                   categories: new Set(),
                   brands: new Set(),
@@ -100,9 +120,9 @@ export default function ProductsPage() {
                 <h3 className="font-medium mb-2">Price Range</h3>
                 <div className="space-y-4">
                   <Slider 
-                    defaultValue={[0, 3000]} 
-                    max={5000} 
-                    step={100}
+                    defaultValue={[0, 50000]} 
+                    max={300000} 
+                    step={5000}
                     onValueChange={(val) => setFilters((prev) => ({ ...prev, priceRange: val }))}                    
                   />
                   <div className="flex items-center justify-between">
@@ -206,7 +226,7 @@ export default function ProductsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {products.length === 0 ? (<LoaderComponent />) : (
-                  products.map((product) => (
+                  filteredProducts.map((product) => (
                     <Link href={`/products/${product.id}`} key={product.id}>
                       <Card className="overflow-hidden hover:shadow-lg transition-shadow">
                         <div className="aspect-square relative">
@@ -214,21 +234,22 @@ export default function ProductsPage() {
                             height={300}
                             width={300}
                             src={product.product_details.images[0] || "/placeholder.svg"}
-                            alt={product.product_details.about_product.brand}
+                            alt={product.name || "Product image"}
                             className="object-cover w-full h-full"
                           />
                         </div>
                         <CardContent className="p-4">
-                          <h3 className="font-medium text-lg mb-1 truncate">{product.product_details.about_product.brand || "Unknown Brand"}</h3>
+                          <h3 className="font-medium text-lg mb-1 truncate">{product.product_details.about_product.title || "Unnamed Product"}</h3>
+                          <p className="text-sm text-gray-500 mb-1">{product.product_details.about_product.brand || "Unknown Brand"}</p>
                           <p className="text-green-600 font-bold">₹ {product.sale_details?.listing_price}</p>
                           <div className="flex justify-between items-center mt-2 text-sm text-gray-500">
-                            <span>{product.product_details.about_product.condition}</span>
+                            <span>{product.condition || product.product_details.about_product.condition}</span>
                             <span>{product.product_details.about_product.location || "Unknown Location"}</span>
                           </div>
                           <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
                             <div className="text-sm">
                               <span className="text-gray-500">Seller: </span>
-                              <span>{product.seller_id}</span>
+                              <span>{getSellerName(product.seller_id)}</span>
                             </div>
                             <div className="flex items-center">
                               <span className="text-yellow-500 mr-1">★</span>
