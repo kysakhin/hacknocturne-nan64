@@ -133,10 +133,10 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { name: "iPhone 13", price: "$499", condition: "Like New" },
-              { name: "MacBook Pro 2021", price: "$1299", condition: "Good" },
-              { name: "Samsung Galaxy S21", price: "$399", condition: "Fair" },
-              { name: "Sony Headphones", price: "$89", condition: "Excellent" },
+              { name: "iPhone 13", src: "/listing-images/iPhone-13-Pro.jpg", price: "$499", condition: "Like New" },
+              { name: "MacBook Pro 2021", src: "/listing-images/Macbook-Air-M1.jpg", price: "$1299", condition: "Good" },
+              { name: "Samsung Galaxy S21", src: "/listing-images/Samsung-Galaxy-S21.webp", price: "$399", condition: "Fair" },
+              { name: "Sony Headphones", src: "/listing-images/Sony-XM4.jpg", price: "$89", condition: "Excellent" },
             ].map((product, index) => (
               <div
                 key={index}
@@ -144,7 +144,7 @@ export default function Home() {
               >
                 <div className="h-48 bg-gray-200">
                   <img
-                    src={`/placeholder.svg?height=300&width=400&text=${product.name}`}
+                    src={product.src}
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />

@@ -75,10 +75,13 @@ export default function Navbar() {
             </Button>
           )}
 
-          <Button variant="ghost" size="icon" className="hidden md:flex">
-            <MessageCircle className="h-5 w-5" />
-            <span className="sr-only">Messages</span>
-          </Button>
+          <Link href="https://env-rag.vercel.app" target="__blank">
+            <Button variant="ghost" size="icon" className="hidden md:flex">
+              <MessageCircle className="h-5 w-5" />
+              <span className="sr-only">Messages</span>
+            </Button>
+          
+          </Link>
 
           <Button variant="ghost" size="icon" className="hidden md:flex">
             <ShoppingCart className="h-5 w-5" />
